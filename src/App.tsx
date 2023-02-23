@@ -1,7 +1,8 @@
 import React from 'react';
+import RoutesPath from './routes/routes';
 
 function App() {
-	return <div>Ajay</div>;
+	return <RoutesPath />;
 }
 
 export default App;
