@@ -68,10 +68,7 @@ export default function CreateCourse(Props) {
 		}
 	};
 	return (
-		<div
-			style={{ display: Props.display ? 'block' : 'none' }}
-			className={styles.createCourse}
-		>
+		<div className={styles.createCourse}>
 			<div>
 				<form onSubmit={handleSubmit}>
 					<div className={styles.createCourseRow1}>

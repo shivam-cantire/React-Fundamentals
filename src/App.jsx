@@ -4,11 +4,14 @@ import CreateCourse from './components/CreateCourse/CreateCourse';
 import { mockedCoursesList, mockedAuthorsList } from './constants/contants';
 import styles from './App.module.css';
 import React from 'react';
+
 function App() {
 	const [showCreateCourse, setShowCreateCourse] = React.useState(false);
 	const [showCourses, setShowCourses] = React.useState(true);
+
 	const [courseList, setCoursesList] = React.useState(mockedCoursesList);
 	const [authorsList, setAthorsList] = React.useState(mockedAuthorsList);
+
 	const handleShowHideCourse = (showCreate) => {
 		if (showCreate) {
 			setShowCreateCourse(true);
@@ -18,24 +21,32 @@ function App() {
 			setShowCourses(true);
 		}
 	};
-	const addNewCourses = (newCourses, newAuthors) => {
+	// const handleToShowCourseListAndHideCreateCourse = () => {};
+	// const handleToHideCourseListAndShowCreateCourse = () => {};
+	const addNewCourse = (newCourses, newAuthors) => {
 		setAthorsList([...authorsList, ...newAuthors]);
 		setCoursesList([...courseList, ...newCourses]);
 	};
 	return (
 		<div className={styles.container}>
 			<Header />
-			<Courses
-				courses={courseList}
-				authors={authorsList}
-				onCreateCourse={handleShowHideCourse}
-				display={showCourses}
-			/>
-			<CreateCourse
-				appendNewCourses={addNewCourses}
-				onSubmitCreateCourse={handleShowHideCourse}
-				display={showCreateCourse}
-			/>
+			{showCourses ? (
+				<Courses
+					courses={courseList}
+					authors={authorsList}
+					onCreateCourse={handleShowHideCourse}
+				/>
+			) : (
+				<></>
+			)}
+			{showCreateCourse ? (
+				<CreateCourse
+					appendNewCourses={addNewCourse}
+					onSubmitCreateCourse={handleShowHideCourse}
+				/>
+			) : (
+				<></>
+			)}
 		</div>
 	);
 }
