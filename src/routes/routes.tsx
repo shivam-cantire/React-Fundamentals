@@ -5,40 +5,30 @@ import Login from 'src/components/Login/Login';
 import Header from 'src/components/Header/Header';
 import Courses from 'src/components/Courses/Courses';
 import CreateCourse from 'src/components/CreateCourse/CreateCourse';
-import IUserInfo from 'src/interfaces/i-userInfo';
+import { mockedCoursesList, mockedAuthorsList } from 'src/constants/contants';
 import CoursesInfo from 'src/components/CourseInfo/CourseInfo';
 import ICourseInfo from 'src/interfaces/i-courseInfo';
 import IAuthorInfo from 'src/interfaces/i-authorInfo';
 export default function RoutesPath() {
-	const [registrationStatus, setRegistrationStatus] =
-		React.useState<boolean>(false);
-	const [newCourse, setNewCourse] = React.useState<any>([]);
-	const [newAuthors, setNewAuthors] = React.useState<any>([]);
-	const handleRegistrationStatus = (status: boolean) => {
-		setRegistrationStatus(status);
-	};
-	const handleAddCourse = (newCourse: ICourseInfo, newAuthors: IAuthorInfo) => {
-		console.log(newCourse, newAuthors);
-		setNewCourse(newCourse);
-		setNewAuthors(newAuthors);
+	const [courses, setCourses] = React.useState(mockedCoursesList);
+	const [authors, setAuthors] = React.useState(mockedAuthorsList);
+
+	const handleAddCourse = (
+		newCourse: [ICourseInfo],
+		newAuthors: [IAuthorInfo]
+	) => {
+		setCourses([...courses, ...newCourse]);
+		setAuthors([...authors, ...newAuthors]);
 	};
 	return (
 		<>
 			<Routes>
-				<Route
-					path='registration'
-					element={
-						<Registration setRegistrationStatus={handleRegistrationStatus} />
-					}
-				/>
-				<Route
-					path='login'
-					element={<Login registrationStatus={registrationStatus} />}
-				/>
+				<Route path='registration' element={<Registration />} />
+				<Route path='login' element={<Login />} />
 				<Route path='/' element={<Header />}>
 					<Route
 						path='courses'
-						element={<Courses newAuthors={newAuthors} newCourse={newCourse} />}
+						element={<Courses courses={courses} authors={authors} />}
 					/>
 					<Route path='course-info/:courseId' element={<CoursesInfo />} />
 					<Route

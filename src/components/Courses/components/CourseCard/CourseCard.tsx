@@ -4,12 +4,13 @@ import { formatTime, formatDate } from 'src/constants/contants';
 import Button from 'src/common/Button/Button';
 import { useNavigate } from 'react-router-dom';
 import ICourseCard from 'src/interfaces/i-courseCard';
-import IAuthorId from 'src/interfaces/i-authorId';
+// import IAuthorId from 'src/interfaces/i-authorId';
+import IAuthorInfo from 'src/interfaces/i-authorInfo';
 export default function CourseCard({ courseDetail, authors }: ICourseCard) {
 	const navigate = useNavigate();
 	const authorsName = courseDetail.authors.map(
-		(author: Array<IAuthorId>) =>
-			authors.find((authorList) => authorList.id === author).name
+		(authorId) =>
+			authors.find((authorList: IAuthorInfo) => authorList.id === authorId).name
 	);
 	const handleShowCourse = () => {
 		navigate(`/course-info/${courseDetail.id}`);

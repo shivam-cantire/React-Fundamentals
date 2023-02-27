@@ -4,7 +4,8 @@ import Button from 'src/common/Button/Button';
 import Input from 'src/common/Input/Input';
 import { useNavigate, Link } from 'react-router-dom';
 import { saveUser } from 'src/api/api';
-export default function Registration({ setRegistrationStatus }): JSX.Element {
+
+export default function Registration(): JSX.Element {
 	const navigate = useNavigate();
 	const [name, setName] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
@@ -38,7 +39,6 @@ export default function Registration({ setRegistrationStatus }): JSX.Element {
 		const response = await saveUser(newUser, 'register');
 		const resultObj = await response.json();
 		if (response.status === 201) {
-			setRegistrationStatus(true);
 			navigate('/login');
 		} else {
 			const error = resultObj.errors ? resultObj.errors[0] : resultObj.result;

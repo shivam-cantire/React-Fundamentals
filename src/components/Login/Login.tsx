@@ -5,7 +5,7 @@ import Input from 'src/common/Input/Input';
 import { useNavigate, Link } from 'react-router-dom';
 import { saveUser } from 'src/api/api';
 
-export default function Login({ registrationStatus }): JSX.Element {
+export default function Login(): JSX.Element {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [errorMsg, setErrorMsg] = useState<string>('');
@@ -14,11 +14,6 @@ export default function Login({ registrationStatus }): JSX.Element {
 	React.useEffect(() => {
 		if (localStorage.getItem('auth-token') != null) {
 			navigate('/courses');
-		}
-		if (registrationStatus) {
-			setcustomMsg(
-				'Registration Successful! Use registration creadentials to log in.'
-			);
 		}
 	}, []);
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +25,7 @@ export default function Login({ registrationStatus }): JSX.Element {
 	};
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+		setcustomMsg('');
 		event.preventDefault();
 		const userDetail = {
 			email,
