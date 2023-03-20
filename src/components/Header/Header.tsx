@@ -4,34 +4,49 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Button from 'src/common/Button/Button';
 import React, { useEffect } from 'react';
 import IUserInfo from 'src/interfaces/i-userInfo';
-import { getUser } from 'src/api/api';
+import api from 'src/services';
+import { LoginUserAction, LogoutUserAction } from 'src/store/users/actions';
+import { useDispatch, useSelector } from 'react-redux';
+
 export default function Header() {
+	const authToken = localStorage.getItem('auth-token');
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const userInfo = useSelector((state) => state['user']);
 	const location = useLocation();
-	const [currentUser, setCurrentUser] = React.useState<IUserInfo>({});
+
 	const logout = () => {
 		localStorage.removeItem('auth-token');
-		setCurrentUser({});
+		api.logout();
+		dispatch(LogoutUserAction());
 		navigate('/login');
 	};
+
 	useEffect(() => {
-		if (location.pathname === '/') {
+		if (location.pathname === '/' || authToken === null) {
 			navigate('/login');
+		} else if (authToken !== null && !userInfo.isAuth) {
+			getCurrentUser();
 		}
-		getCurrentUser();
 	}, []);
 
 	const getCurrentUser = async () => {
-		const authToken = localStorage.getItem('auth-token');
 		const headers = {
 			'Content-Type': 'application/json',
 			Authorization: authToken,
 		};
 		if (authToken != null) {
-			const response = await getUser('users/me', headers);
+			const response = await api.sendGetReq('users/me');
 			if (response.status == 200) {
 				const resultObj = await response.json();
-				setCurrentUser(resultObj.result);
+				const userObj = {
+					isAuth: true,
+					token: authToken,
+					...resultObj.result,
+				};
+				dispatch(LoginUserAction(userObj));
+			} else {
+				logout();
 			}
 		} else {
 			navigate('/login');
@@ -46,10 +61,10 @@ export default function Header() {
 						<strong>Courses</strong>
 					</span>
 				</div>
-				{currentUser ? (
+				{userInfo.isAuth ? (
 					<div className={styles.rightWrapper}>
 						<span>
-							<strong>{currentUser.name}</strong>
+							<strong>{userInfo.name}</strong>
 						</span>
 						<Button
 							onClick={logout}

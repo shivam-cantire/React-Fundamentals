@@ -3,7 +3,7 @@ import styles from './Registration.module.scss';
 import Button from 'src/common/Button/Button';
 import Input from 'src/common/Input/Input';
 import { useNavigate, Link } from 'react-router-dom';
-import { saveUser } from 'src/api/api';
+import api from 'src/services';
 
 export default function Registration(): JSX.Element {
 	const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function Registration(): JSX.Element {
 			password,
 		};
 
-		const response = await saveUser(newUser, 'register');
+		const response = await api.sendPostReq(newUser, 'register');
 		const resultObj = await response.json();
 		if (response.status === 201) {
 			navigate('/login');

@@ -1,29 +1,29 @@
 import styles from './CourseInfo.module.scss';
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import {
-	mockedAuthorsList,
-	mockedCoursesList,
-	formatTime,
-	formatDate,
-} from 'src/constants/contants';
+import { formatTime, formatDate } from 'src/constants/contants';
 import ICourseInfo from 'src/interfaces/i-courseInfo';
+import { useSelector } from 'react-redux';
+import IReducers from 'src/interfaces/i-reducers';
 
 export default function CoursesInfo() {
-	const params = useParams();
-	const [authorsName, setAuthorsName] = React.useState<Array<string>>([]);
+	const courseId = useParams().courseId;
+	const courses = useSelector((state: IReducers) => state.courses);
+	const authors = useSelector((state: IReducers) => state.authors);
+	const [courseAuthorsName, setCourseAuthorsName] = React.useState<
+		Array<string>
+	>([]);
 	const [courseInfo, setCourseInfo] = React.useState<ICourseInfo>();
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
-		const courseDetail = mockedCoursesList.filter(
-			(courseList) => courseList.id == params.courseId
+		const courseDetail = courses.data.filter(
+			(course) => course.id == courseId
 		)[0];
 		setCourseInfo(courseDetail);
-		const authors = courseDetail.authors.map(
-			(author) =>
-				mockedAuthorsList.find((authorList) => authorList.id === author).name
+		const courseAuthors = courseDetail.authors.map(
+			(author) => authors.find((authorList) => authorList.id === author).name
 		);
-		setAuthorsName(authors);
+		setCourseAuthorsName(courseAuthors);
 	}, []);
 	return (
 		<div className={styles.coursesInfoContainer}>
@@ -61,7 +61,7 @@ export default function CoursesInfo() {
 						</div>
 						<div className={styles.courseBox}>
 							<span>Authors:</span>
-							<span>{authorsName && authorsName.join(', ')}</span>
+							<span>{courseAuthorsName && courseAuthorsName.join(', ')}</span>
 						</div>
 					</div>
 				</div>

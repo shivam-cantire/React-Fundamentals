@@ -79,11 +79,11 @@
     border: 1px outset rgb(149, 0, 255);
     background-color: white;
     min-height: 30px;
-    min-width: 150px;
+    min-width: 100px;
     margin-top: 30px;
+    text-decoration-style: solid;
     cursor: pointer;
     position:relative;
-    left:30%;
 }
 
 .courseBox span:first-child {
@@ -92,4 +92,9 @@
 
 .courseBox span:last-child {
     margin-left: 5px;
+}
+
+.actionBtns{
+    display: flex;
+    gap: 5px;
 }

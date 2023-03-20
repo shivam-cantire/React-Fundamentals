@@ -2,10 +2,13 @@ import React, { useState, FormEvent } from 'react';
 import styles from './Login.module.scss';
 import Button from 'src/common/Button/Button';
 import Input from 'src/common/Input/Input';
+import { useDispatch } from 'react-redux';
+import { LoginUserAction } from 'src/store/users/actions';
 import { useNavigate, Link } from 'react-router-dom';
-import { saveUser } from 'src/api/api';
+import api from 'src/services';
 
 export default function Login(): JSX.Element {
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [errorMsg, setErrorMsg] = useState<string>('');
@@ -23,7 +26,27 @@ export default function Login(): JSX.Element {
 	const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
 	};
-
+	const getCurrentUser = async (authToken: string) => {
+		localStorage.setItem('auth-token', authToken);
+		const headers = {
+			'Content-Type': 'application/json',
+			Authorization: authToken,
+		};
+		if (authToken != null) {
+			const response = await api.sendGetReq('users/me');
+			if (response.status == 200) {
+				const resultObj = await response.json();
+				const userObj = {
+					...resultObj.result,
+					isAuth: true,
+					token: authToken,
+				};
+				dispatch(LoginUserAction(userObj));
+			}
+		} else {
+			navigate('/login');
+		}
+	};
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		setcustomMsg('');
 		event.preventDefault();
@@ -31,10 +54,11 @@ export default function Login(): JSX.Element {
 			email,
 			password,
 		};
-		const response = await saveUser(userDetail, 'login');
+		const response = await api.sendPostReq(userDetail, 'login');
 		const resultObj = await response.json();
 		if (response.status === 201) {
-			localStorage.setItem('auth-token', resultObj.result);
+			getCurrentUser(resultObj.result);
+			// localStorage.setItem('auth-token', resultObj.result);
 			navigate('/courses');
 		} else {
 			const error = resultObj.errors ? resultObj.errors[0] : resultObj.result;

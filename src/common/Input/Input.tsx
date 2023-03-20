@@ -6,6 +6,7 @@ export default function Input({
 	label,
 	value,
 	onChange,
+	checked,
 	style,
 	placeholder,
 	type,
@@ -15,6 +16,7 @@ export default function Input({
 		<div className={styles.inputComponent}>
 			{label && <label>{label}</label>}
 			<input
+				checked={checked}
 				value={value}
 				onChange={onChange}
 				className={style}

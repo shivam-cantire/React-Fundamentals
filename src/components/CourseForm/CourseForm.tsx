@@ -1,48 +1,65 @@
-import styles from './CreateCourse.module.scss';
-import React from 'react';
+import styles from './CourseForm.module.scss';
+import React, { useEffect } from 'react';
 import Button from '../../common/Button/Button';
 import Input from '../../common/Input/Input';
 import AuthorItem from './components/AuthorItem';
 import { formatTime } from '../../constants/contants';
-import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import IReducers from 'src/interfaces/i-reducers';
+import IAuthorInfo from 'src/interfaces/i-authorInfo';
+import { addNewCourse, updateCourse } from 'src/store/courses/thunk';
+import { addNewAuthor } from 'src/store/authors/thunk';
 
 // import IAuthorInfo from 'src/interfaces/i-authorInfo';
-export default function CreateCourse({ addCourse }) {
-	const navigate = useNavigate();
+export default function CourseForm() {
 	const [durationValue, setDurationValue] = React.useState<string>('00:00');
+	const [duration, setDuration] = React.useState<number>();
 	const [authorName, setAuthorName] = React.useState<string>('');
-
 	const [titleValue, setTitleValue] = React.useState<string>('');
 	const [descriptionValue, setDescriptionValue] = React.useState<string>('');
-
-	const [addedAuthorList, addAuthorToList] = React.useState<any>([]);
 	const [selectedAuthors, addSelectedAuthor] = React.useState<any>([]);
+	const navigate = useNavigate();
+	const dispatch = useDispatch<any>();
 
-	const addAuthor = () => {
-		const authorInfo = [
-			{
-				id: uuidv4(),
-				name: authorName,
-			},
-		];
-		addAuthorToList([...addedAuthorList, ...authorInfo]);
+	const courseId = useParams().courseId;
+	if (courseId) {
+		const courses = useSelector((state: IReducers) => state.courses);
+		useEffect(() => {
+			const courseDetail = courses.data.filter(
+				(course) => course.id == courseId
+			)[0];
+			setTitleValue(courseDetail.title);
+			setDescriptionValue(courseDetail.description);
+			setDuration(courseDetail.duration);
+			setDurationValue(formatTime(courseDetail.duration));
+			addSelectedAuthor(courseDetail.authors);
+		}, []);
+	}
+
+	const authors = useSelector(
+		(state: IReducers): IAuthorInfo[] => state.authors
+	);
+
+	const addAuthor = async () => {
+		dispatch(addNewAuthor(authorName));
 		setAuthorName('');
 	};
-	const deleteAuthor = (selectedAuthor) => {
-		const authorId = selectedAuthor[0].id;
-		const updatedList = selectedAuthors.filter(
-			(selectedAuthor) => selectedAuthor.id !== authorId
-		);
-		addSelectedAuthor(updatedList);
-	};
-	const selectAuthor = (selectedAuthor) => {
-		addSelectedAuthor([...selectedAuthors, ...selectedAuthor]);
-	};
+
 	const addTitle = (event) => {
 		setTitleValue(event.target.value);
 	};
 
+	const handleSelectAuthor = (e) => {
+		const selectedId = e.target.value;
+		if (e.target.checked) {
+			addSelectedAuthor([...selectedAuthors, selectedId]);
+		} else {
+			addSelectedAuthor(() =>
+				selectedAuthors.filter((authorId: string) => authorId !== selectedId)
+			);
+		}
+	};
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		if (
@@ -53,19 +70,20 @@ export default function CreateCourse({ addCourse }) {
 		) {
 			const [hours, minutes] = durationValue.split(':');
 			const durationInMins = Number(hours) * 60 + Number(minutes);
-			const courseDetail = [
-				{
-					id: uuidv4(),
-					title: titleValue,
-					description: descriptionValue,
-					creationDate: `${new Date().getDate()}/${
-						new Date().getMonth() + 1
-					}/${new Date().getFullYear()}`,
-					duration: durationInMins,
-					authors: selectedAuthors.map((author) => author.id),
-				},
-			];
-			addCourse(courseDetail, selectedAuthors);
+			const courseDetail = {
+				title: titleValue,
+				description: descriptionValue,
+				creationDate: `${new Date().getDate()}/${
+					new Date().getMonth() + 1
+				}/${new Date().getFullYear()}`,
+				duration: durationInMins,
+				authors: selectedAuthors,
+			};
+			if (courseId) {
+				dispatch(updateCourse(courseDetail, courseId));
+			} else {
+				dispatch(addNewCourse(courseDetail));
+			}
 			navigate('/courses');
 		} else {
 			alert('All fields are mandatory');
@@ -77,15 +95,17 @@ export default function CreateCourse({ addCourse }) {
 				<form onSubmit={handleSubmit}>
 					<div className={styles.createCourseRow1}>
 						<Input
+							value={titleValue}
 							onChange={addTitle}
 							placeholder={'Enter title...'}
 							label={'Title'}
 						/>
-						<Button label={'Create course'} />
+						<Button label={courseId ? 'Update Course' : 'Create course'} />
 					</div>
 					<div className={styles.createCourseRow2}>
 						<label>Description</label>
 						<textarea
+							value={descriptionValue}
 							onChange={(event) => setDescriptionValue(event.target.value)}
 							placeholder='Enter description'
 						></textarea>
@@ -112,15 +132,11 @@ export default function CreateCourse({ addCourse }) {
 							/>
 						</div>
 						<div className={styles.duration}>
-							{/* <div>
-								<label>
-									<strong>Duration</strong>
-								</label>
-							</div> */}
 							<Input
 								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 									setDurationValue(formatTime(event.target.value))
 								}
+								value={duration}
 								type={'number'}
 								min={0}
 								placeholder={'Enter duration in minutes...'}
@@ -138,30 +154,13 @@ export default function CreateCourse({ addCourse }) {
 							<strong>Authors</strong>
 						</label>
 						<div>
-							{addedAuthorList.length ? (
-								addedAuthorList.map((author, index) => (
+							{authors.length ? (
+								authors.map((author, index) => (
 									<AuthorItem
 										key={index}
-										clickAction={selectAuthor}
+										selectedAuthors={selectedAuthors}
+										selectAuthor={handleSelectAuthor}
 										author={author}
-										type={'Add author'}
-									/>
-								))
-							) : (
-								<label>Author list is empty</label>
-							)}
-						</div>
-						<label>
-							<strong>Course Authors</strong>
-						</label>
-						<div>
-							{selectedAuthors.length ? (
-								selectedAuthors.map((author, index) => (
-									<AuthorItem
-										key={index}
-										clickAction={deleteAuthor}
-										author={author}
-										type={'Delete author'}
 									/>
 								))
 							) : (
