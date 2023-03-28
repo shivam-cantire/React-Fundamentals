@@ -8,7 +8,7 @@ export const mockedCoursesList = [
                     not only five centuries, but also the leap into electronic typesetting, remaining essentially u
                     nchanged.`,
 		creationDate: '08/03/2021',
-		duration: '160',
+		duration: 160,
 		authors: [
 			'27cc3006-e93a-4748-8ca8-73d06aa93b6d',
 			'f762978b-61eb-4096-812b-ebde22838167',
@@ -21,7 +21,7 @@ export const mockedCoursesList = [
                     has been the industry's standard dummy text ever since the 1500s, when an unknown 
                     printer took a galley of type and scrambled it to make a type specimen book.`,
 		creationDate: '10/11/2020',
-		duration: '210',
+		duration: 210,
 		authors: [
 			'df32994e-b23d-497c-9e4d-84e4dc02882f',
 			'095a1817-d45b-4ed7-9cf7-b2417bcbf748',
@@ -34,7 +34,7 @@ export const mockedCoursesList = [
                     has been the industry's standard dummy text ever since the 1500s, when an unknown 
                     printer took a galley of type and scrambled it to make a type specimen book.`,
 		creationDate: '10/11/2020',
-		duration: '310',
+		duration: 310,
 		authors: [
 			'df32994e-b23d-497c-9e4d-84e4dc02882f',
 			'095a1817-d45b-4ed7-9cf7-b2417bcbf748',
@@ -47,7 +47,7 @@ export const mockedCoursesList = [
                     has been the industry's standard dummy text ever since the 1500s, when an unknown 
                     printer took a galley of type and scrambled it to make a type specimen book.`,
 		creationDate: '10/11/2020',
-		duration: '150',
+		duration: 150,
 		authors: [
 			'df32994e-b23d-497c-9e4d-84e4dc02882f',
 			'095a1817-d45b-4ed7-9cf7-b2417bcbf748',

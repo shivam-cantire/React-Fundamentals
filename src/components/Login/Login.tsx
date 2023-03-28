@@ -27,24 +27,15 @@ export default function Login(): JSX.Element {
 		setPassword(event.target.value);
 	};
 	const getCurrentUser = async (authToken: string) => {
-		localStorage.setItem('auth-token', authToken);
-		const headers = {
-			'Content-Type': 'application/json',
-			Authorization: authToken,
-		};
-		if (authToken != null) {
-			const response = await api.sendGetReq('users/me');
-			if (response.status == 200) {
-				const resultObj = await response.json();
-				const userObj = {
-					...resultObj.result,
-					isAuth: true,
-					token: authToken,
-				};
-				dispatch(LoginUserAction(userObj));
-			}
-		} else {
-			navigate('/login');
+		const response = await api.sendGetReq('users/me', authToken);
+		if (response.status == 200) {
+			const resultObj = await response.json();
+			const userObj = {
+				...resultObj.result,
+				isAuth: true,
+				token: authToken,
+			};
+			dispatch(LoginUserAction(userObj));
 		}
 	};
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -57,7 +48,9 @@ export default function Login(): JSX.Element {
 		const response = await api.sendPostReq(userDetail, 'login');
 		const resultObj = await response.json();
 		if (response.status === 201) {
-			getCurrentUser(resultObj.result);
+			const authToken = resultObj.result;
+			localStorage.setItem('auth-token', authToken);
+			getCurrentUser(authToken);
 			// localStorage.setItem('auth-token', resultObj.result);
 			navigate('/courses');
 		} else {

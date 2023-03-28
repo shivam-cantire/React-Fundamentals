@@ -24,9 +24,10 @@ export const getAllCourses = () => {
 };
 
 export const addNewCourse = (payload) => {
+	const authToken = localStorage.getItem('auth-token');
 	return async function (dispatch: Dispatch) {
 		try {
-			const response = await api.sendPostReq(payload, 'courses/add');
+			const response = await api.sendPostReq(payload, 'courses/add', authToken);
 			if (response.status === 201) {
 				response.json().then((data) => {
 					dispatch(addNewCourseAction(data.result));
@@ -38,9 +39,13 @@ export const addNewCourse = (payload) => {
 	};
 };
 export const deleteCourse = (courseId) => {
+	const authToken = localStorage.getItem('auth-token');
 	return async function (dispatch: Dispatch) {
 		try {
-			const response = await api.sendDeleteReq(`courses/${courseId}`);
+			const response = await api.sendDeleteReq(
+				`courses/${courseId}`,
+				authToken
+			);
 			if (response.status === 200) {
 				dispatch(deleteCourseAction(courseId));
 			}
@@ -51,9 +56,14 @@ export const deleteCourse = (courseId) => {
 };
 
 export const updateCourse = (payload, courseId) => {
+	const authToken = localStorage.getItem('auth-token');
 	return async function (dispatch: Dispatch) {
 		try {
-			const response = await api.sendPutReq(payload, `courses/${courseId}`);
+			const response = await api.sendPutReq(
+				payload,
+				`courses/${courseId}`,
+				authToken
+			);
 			if (response.status === 200) {
 				response.json().then((data) => {
 					dispatch(updateCourseAction(data.result, courseId));

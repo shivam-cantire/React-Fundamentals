@@ -1,4 +1,3 @@
-const authToken = localStorage.getItem('auth-token');
 export const fetchAllCourses = async () => {
 	return await fetch(`http://localhost:4000/courses/all`, {
 		method: 'GET',
@@ -17,12 +16,12 @@ export const fetchAuthors = async () => {
 	});
 };
 
-const sendPostReq = async (data, path: string) => {
+const sendPostReq = async (data, path: string, authToken: string = null) => {
 	const headers = {
 		'Content-Type': 'application/json',
 		Authorization: authToken,
 	};
-	if (path.includes('register') || path.includes('login')) {
+	if (authToken) {
 		delete headers.Authorization;
 	}
 	return await fetch(`http://localhost:4000/${path}`, {
@@ -32,7 +31,7 @@ const sendPostReq = async (data, path: string) => {
 	});
 };
 
-const sendGetReq = async (path: string) => {
+const sendGetReq = async (path: string, authToken: string) => {
 	return await fetch(`http://localhost:4000/${path}`, {
 		method: 'GET',
 		headers: {
@@ -42,7 +41,7 @@ const sendGetReq = async (path: string) => {
 	});
 };
 
-const logout = async () => {
+const logout = async (authToken: string) => {
 	return await fetch(`http://localhost:4000/logout`, {
 		method: 'DELETE',
 		headers: {
@@ -52,7 +51,7 @@ const logout = async () => {
 	});
 };
 
-const deleteCourse = async (courseId) => {
+const deleteCourse = async (courseId, authToken: string) => {
 	return await fetch(`http://localhost:4000/courses/${courseId}`, {
 		method: 'DELETE',
 		headers: {
@@ -62,7 +61,7 @@ const deleteCourse = async (courseId) => {
 	});
 };
 
-const sendDeleteReq = async (deletePath: string) => {
+const sendDeleteReq = async (deletePath: string, authToken: string) => {
 	return await fetch(`http://localhost:4000/${deletePath}`, {
 		method: 'DELETE',
 		headers: {
@@ -72,7 +71,7 @@ const sendDeleteReq = async (deletePath: string) => {
 	});
 };
 
-const sendPutReq = async (data, updatePath: string) => {
+const sendPutReq = async (data, updatePath: string, authToken: string) => {
 	return await fetch(`http://localhost:4000/${updatePath}`, {
 		method: 'PUT',
 		body: JSON.stringify(data),

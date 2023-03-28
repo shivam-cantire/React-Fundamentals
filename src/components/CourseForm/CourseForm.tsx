@@ -13,6 +13,7 @@ import { addNewAuthor } from 'src/store/authors/thunk';
 
 // import IAuthorInfo from 'src/interfaces/i-authorInfo';
 export default function CourseForm() {
+	console.log('Course form opened');
 	const [durationValue, setDurationValue] = React.useState<string>('00:00');
 	const [duration, setDuration] = React.useState<number>();
 	const [authorName, setAuthorName] = React.useState<string>('');

@@ -29,6 +29,24 @@ export default function CourseCard({ courseDetail, authors }: ICourseCard) {
 			alert(`Can't delete this course`);
 		}
 	};
+	const renderDeleteAndUpdateForAdmin = () => {
+		return userRole === 'admin' ? (
+			<>
+				<Button
+					style={styles.showCourseBtn}
+					onClick={handleUpdateCourse}
+					label={'Update'}
+				/>
+				<Button
+					style={styles.showCourseBtn}
+					onClick={handleDeleteCourse}
+					label={'Delete'}
+				/>
+			</>
+		) : (
+			<></>
+		);
+	};
 	return (
 		<div className={styles.courseCard}>
 			<div className={styles.courseDetail}>
@@ -61,22 +79,7 @@ export default function CourseCard({ courseDetail, authors }: ICourseCard) {
 							style={styles.showCourseBtn}
 							label={'Show course'}
 						/>
-						{userRole === 'admin' ? (
-							<>
-								<Button
-									style={styles.showCourseBtn}
-									onClick={handleUpdateCourse}
-									label={'Update'}
-								/>
-								<Button
-									style={styles.showCourseBtn}
-									onClick={handleDeleteCourse}
-									label={'Delete'}
-								/>
-							</>
-						) : (
-							<></>
-						)}
+						{renderDeleteAndUpdateForAdmin()}
 					</div>
 				</div>
 			</div>

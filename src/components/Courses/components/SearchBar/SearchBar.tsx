@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 export default function SearchBar() {
 	const navigate = useNavigate();
 	const handleSearch = () => {
-		alert('I am clicked from search');
+		// alert('I am clicked from search');
 	};
 	const handleAddCourse = () => {
 		navigate('add');
@@ -20,7 +20,6 @@ export default function SearchBar() {
 				<Button
 					onClick={handleAddCourse}
 					style={styles.addCourse}
-					placeholder={'Enter course name...'}
 					label={'Add new Course'}
 				/>
 			</div>

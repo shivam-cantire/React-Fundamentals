@@ -3,7 +3,6 @@ import Logo from './components/Logo/Logo';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Button from 'src/common/Button/Button';
 import React, { useEffect } from 'react';
-import IUserInfo from 'src/interfaces/i-userInfo';
 import api from 'src/services';
 import { LoginUserAction, LogoutUserAction } from 'src/store/users/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +16,7 @@ export default function Header() {
 
 	const logout = () => {
 		localStorage.removeItem('auth-token');
-		api.logout();
+		api.logout(authToken);
 		dispatch(LogoutUserAction());
 		navigate('/login');
 	};
@@ -31,12 +30,8 @@ export default function Header() {
 	}, []);
 
 	const getCurrentUser = async () => {
-		const headers = {
-			'Content-Type': 'application/json',
-			Authorization: authToken,
-		};
 		if (authToken != null) {
-			const response = await api.sendGetReq('users/me');
+			const response = await api.sendGetReq('users/me', authToken);
 			if (response.status == 200) {
 				const resultObj = await response.json();
 				const userObj = {

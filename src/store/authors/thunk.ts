@@ -23,11 +23,13 @@ export const getAuthors = () => {
 };
 
 export const addNewAuthor = (authorName: string) => {
+	const authToken = localStorage.getItem('auth-token');
 	return async function (dispatch: Dispatch) {
 		try {
 			const response = await api.sendPostReq(
 				{ name: authorName },
-				'authors/add'
+				'authors/add',
+				authToken
 			);
 			if (response.status === 201) {
 				response.json().then((data) => {
@@ -41,9 +43,13 @@ export const addNewAuthor = (authorName: string) => {
 };
 
 export const deleteAuthor = (authorId: string) => {
+	const authToken = localStorage.getItem('auth-token');
 	return async function (dispatch: Dispatch) {
 		try {
-			const response = await api.sendDeleteReq(`authors/${authorId}`);
+			const response = await api.sendDeleteReq(
+				`authors/${authorId}`,
+				authToken
+			);
 			if (response.status === 200) {
 				dispatch(deleteAuthorAction(authorId));
 			}
